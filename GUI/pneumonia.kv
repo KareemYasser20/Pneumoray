@@ -1,0 +1,156 @@
+WindowManager:
+    FirstScreen:
+    SecondScreen:
+    ThirdScreen:
+
+<FirstScreen>:
+    name:"first"
+    FloatLayout:
+        Image:     # This part doesn't seem to work
+            source: "background.jpg"
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 1, 1
+        Label:
+            text:"Home page"
+            font_size:22
+            halign: 'left'
+            valign: 'top'
+            color: 0, 0, 1, 1
+            text_size: cm(20), cm(14)
+
+    BoxLayout:
+        orientation:"vertical"
+        size:root.width,root.height
+        padding: 30
+        spacing:8
+
+        Button:
+            text:"Predict Single image"
+            font_size:22
+            size: 740, 50
+            size_hint: None, None
+            on_release:
+                app.root.current="second"
+                root.manager.transition.direction="left"
+
+        Button:
+            text:"Predict Multi images"
+            font_size:22
+            size: 740, 50
+            size_hint: None, None
+            on_release:
+                app.root.current="third"
+                root.manager.transition.direction="left"
+
+<SecondScreen>:
+    name:"second"
+    BoxLayout:
+        orientation: 'vertical'
+        spacing:10
+        BoxLayout:
+            padding:20
+            size_hint_y: None
+            Label:
+                text:'Hello please load a single x-Ray image'
+                font_size:22
+            Button:
+                text: 'Load'
+                font_size:22
+                on_release: root.show_load()
+
+        Image:
+            id: img
+            pos_hint: {'center_x':.5, 'center_y':.5}
+            size_hint: 0.7, 3
+            source:''
+            allow_stretch: True
+
+        Label:
+            id:img_class
+            text:''
+            font_size:22
+
+        BoxLayout:
+            orientation:"horizontal"
+            size:root.width,root.height
+            padding: 30
+            spacing:8
+            Button:
+                text:"Go Back"
+                font_size:22
+                size: 370, 50
+                size_hint: None, None
+                on_release:
+                    app.root.current="first"
+                    root.manager.transition.direction="right"
+            Button:
+                text:"Reset"
+                font_size:22
+                size: 370, 50
+                size_hint: None, None
+                on_release:
+                    on_press=root.clearSecondPage()
+
+<ThirdScreen>:
+    name:"third"
+    FloatLayout:
+        Image:     # This part doesn't seem to work
+            source: "background.jpg"
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 1, 1
+    BoxLayout:
+
+        orientation:"vertical"
+        size:root.width,root.height
+        padding: 50
+        spacing:10
+        BoxLayout:
+            orientation:"horizontal"
+            size:root.width,root.height
+            Button:
+                text: ' Choose folder path'
+                size_hint:(0.3,0.2)
+                on_press: root.open()
+            TextInput:
+                id: path
+                multiline: True
+                size_hint:(0.5,0.2)
+
+        BoxLayout:
+            orientation:"horizontal"
+            size:root.width,root.height
+            spacing:100
+            Button:
+                text:"Go back"
+                font_size:22
+                size_hint:(.01,.2)
+                on_press:
+                    app.root.current="first"
+                    root.manager.transition.direction="right"
+            Button:
+                text:"Get results"
+                font_size:22
+                size_hint:(.01,.2)
+                on_press:
+                    root.press()
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
